@@ -17,6 +17,35 @@
     </style>
 </head>
 <body>
-    <iframe src="https://github.com" allowfullscreen></iframe>
+        <iframe src="https://github.com" allowfullscreen id="remoteFrame"></iframe>
+        <div id="fallback" style="display:none; position:fixed; inset:0; align-items:center; justify-content:center; background:#ffffff;">
+                <div style="text-align:center; padding:24px;">
+                        <p>Embedding is blocked by the remote site. Open GitHub in a new tab:</p>
+                        <a href="https://github.com" target="_blank" rel="noopener">Open GitHub</a>
+                        <button id="openBtn" style="margin-left:12px;">Open in new tab</button>
+                </div>
+        </div>
+        <script>
+        (function(){
+            var iframe = document.getElementById('remoteFrame');
+            var fallback = document.getElementById('fallback');
+            function showFallback(){ fallback.style.display = 'flex'; }
+            iframe.addEventListener('load', function(){
+                try{
+                    var doc = iframe.contentDocument || iframe.contentWindow.document;
+                    // If same-origin, embedding is allowed — nothing to do.
+                }catch(e){
+                    // Cross-origin access throws; assume embedding blocked.
+                    showFallback();
+                }
+            });
+            // Fallback check after a short delay in case load doesn't throw.
+            setTimeout(function(){
+                try{ var doc = iframe.contentDocument || iframe.contentWindow.document; }
+                catch(e){ showFallback(); }
+            }, 1000);
+            document.getElementById('openBtn').addEventListener('click', function(){ window.open('https://github.com', '_blank', 'noopener'); });
+        })();
+        </script>
 </body>
 </html>
